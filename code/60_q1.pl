@@ -1,4 +1,5 @@
 :- use_module(library(lists)).
+:- use_module(library(apply)).
 
 % valid_assignment(Solution): Solution lists Alex, Ben, Carla and Dana in this
 % order, each with a distinct department, a distinct favorite language and a
@@ -51,3 +52,15 @@ clue(8, Solution) :-
     memberchk(p(_, Dept, Lang, data), Solution),
     Dept == research,
     Lang \== javascript.
+
+% main: prints one solution satisfying valid_assignment/1 and clues 1 to 8,
+% as two lines per friend (name, then [department, language, project]).
+main :-
+    once(( valid_assignment(Solution),
+           forall(member(N, [1, 2, 3, 4, 5, 6, 7, 8]), clue(N, Solution)) )),
+    maplist(print_friend, Solution).
+
+% print_friend(Friend): Friend is printed as its name on one line and
+% [Dept, Lang, Proj] as unquoted text on the next line.
+print_friend(p(Name, Dept, Lang, Proj)) :-
+    format("~w~n[~w, ~w, ~w]~n", [Name, Dept, Lang, Proj]).
