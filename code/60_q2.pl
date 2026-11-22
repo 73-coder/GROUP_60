@@ -72,3 +72,85 @@ needs_parens(left, Prec, ParentPrec) :-
 
 needs_parens(right, Prec, ParentPrec) :-
     Prec =< ParentPrec.
+
+% generate_expr(+List, -Expr)
+% Expr is a binary expression tree whose leaves are exactly the numbers of
+% List, each used once and in their original order. A one-element list gives
+% that number itself. Otherwise List splits into a non-empty Left part and a
+% non-empty Right part, each part has an expression tree, and the two trees
+% are joined by one of add, sub, mul or div. Backtracking over every split
+% point and every operator yields every possible tree. An empty list has no
+% tree, so the predicate fails.
+
+generate_expr([N], N).
+generate_expr(List, Expr) :-
+    append(Left, Right, List),
+    Left  = [_|_],
+    Right = [_|_],
+    generate_expr(Left, L),
+    generate_expr(Right, R),
+    member(Op, [add, sub, mul, div]),
+    Expr =.. [Op, L, R].
+
+% generate_equation_parts(+List, -LeftExpr, -RightExpr)
+% LeftExpr and RightExpr are expression trees over a split of List into a
+% non-empty prefix and a non-empty suffix. Together they use every number of
+% List exactly once, in the original order: LeftExpr covers the prefix and
+% RightExpr covers the suffix. Every split point and every pair of trees is
+% produced on backtracking. A list with fewer than two elements has no such
+% split, so the predicate fails.
+
+generate_equation_parts(List, LeftExpr, RightExpr) :-
+    append(Left, Right, List),
+    Left  = [_|_],
+    Right = [_|_],
+    generate_expr(Left, LeftExpr),
+    generate_expr(Right, RightExpr).
+
+% generate_equation(+List, -Equation)
+% Equation is one valid equation for List, as an SWI-Prolog string such as
+% "4*2=5+3". It comes from a split of List into a non-empty prefix and suffix
+% with an expression tree for each side, where both trees evaluate to the same
+% integer (a division by zero or with a remainder anywhere inside a tree makes
+% that tree have no value, so it is rejected). The two sides are written in
+% canonical form and joined by exactly one "=". Only the first valid equation
+% found is returned. If there is none, including for lists with fewer than two
+% numbers, the predicate fails.
+
+generate_equation(List, Equation) :-
+    once(( generate_equation_parts(List, LeftExpr, RightExpr),
+           eval_expr(LeftExpr, Value),
+           eval_expr(RightExpr, Value),
+           format_expr(LeftExpr, LeftStr),
+           format_expr(RightExpr, RightStr),
+           format(string(Equation), "~s=~s", [LeftStr, RightStr]))).
+
+% all_equations(+List, -Equations)
+% Equations is the sorted list, without duplicates, of every valid equation
+% for List, each written as an SWI-Prolog string such as "4*2=5+3". An
+% equation comes from a split of List into a non-empty prefix and suffix with
+% an expression tree for each side, where both trees evaluate to the same
+% integer (a division by zero or with a remainder anywhere inside a tree
+% makes that tree have no value, so it is rejected). Each side is written in
+% canonical form and the two sides are joined by exactly one "=". If no valid
+% equation exists, Equations is [].
+
+all_equations(List, Equations) :-
+    findall(Equation,
+            ( generate_equation_parts(List, LeftExpr, RightExpr),
+              eval_expr(LeftExpr, Value),
+              eval_expr(RightExpr, Value),
+              format_expr(LeftExpr, LeftStr),
+              format_expr(RightExpr, RightStr),
+              format(string(Equation), "~s=~s", [LeftStr, RightStr]) ),
+            Equations0),
+    sort(Equations0, Equations).
+
+% count_equations(+List, -N)
+% N is the number of valid, unique equations for List, that is, the length of
+% the list returned by all_equations/2. If there are none, N is 0.
+
+count_equations(List, N) :-
+    all_equations(List, Equations),
+    length(Equations, N).
+
