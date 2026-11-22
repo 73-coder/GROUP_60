@@ -1,4 +1,4 @@
-# GROUPID
+# GROUP60
 POPL_Assignment2
 
 Group members:
