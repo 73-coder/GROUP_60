@@ -38,4 +38,8 @@
   (cond ((null? tree) 0)
         ((and (null? (cadr tree)) (null? (caddr tree))) 1)
         (else (+ (leaf-count (cadr tree))
-                 (leaf-count (caddr tree))))))               
+                 (leaf-count (caddr tree))))))
+
+(define (print-height-and-leaves tree)
+  (display (list (tree-height tree) (leaf-count tree)))
+  (newline))               
