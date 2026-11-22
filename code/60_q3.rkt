@@ -28,3 +28,8 @@
   (newline)
   (display (postorder-list tree '()))
   (newline))
+(define (tree-height tree)
+  (if (null? tree)
+      0
+      (+ 1 (max (tree-height (cadr tree))
+                (tree-height (caddr tree))))))
