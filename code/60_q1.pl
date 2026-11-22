@@ -1,5 +1,6 @@
 :- use_module(library(lists)).
 :- use_module(library(apply)).
+:- use_module(library(aggregate)).
 
 % valid_assignment(Solution): Solution lists Alex, Ben, Carla and Dana in this
 % order, each with a distinct department, a distinct favorite language and a
@@ -52,6 +53,15 @@ clue(8, Solution) :-
     memberchk(p(_, Dept, Lang, data), Solution),
     Dept == research,
     Lang \== javascript.
+% Clue 9: Alex prefers the 'AI' project. Clues 1-8 leave three solutions:
+% in two of them Carla has 'AI' and Alex has embedded (they differ only in
+% whether Alex or Carla is in design/testing); in the third, Alex has 'AI'
+% (design, java), Carla has data (research, c++), Ben has web (development,
+% javascript) and Dana has embedded (testing, python). This clue holds only in
+% the third, so it uniquely resolves the ambiguity.
+clue(9, Solution) :-
+    memberchk(p('Alex', _, _, Proj), Solution),
+    Proj == 'AI'.
 
 % main: prints one solution satisfying valid_assignment/1 and clues 1 to 8,
 % as two lines per friend (name, then [department, language, project]).
@@ -64,3 +74,11 @@ main :-
 % [Dept, Lang, Proj] as unquoted text on the next line.
 print_friend(p(Name, Dept, Lang, Proj)) :-
     format("~w~n[~w, ~w, ~w]~n", [Name, Dept, Lang, Proj]).
+
+% count_solutions(ClueNumbers, Count): Count is the number of distinct
+% solutions that are valid assignments and satisfy every clue in ClueNumbers.
+count_solutions(ClueNumbers, Count) :-
+    aggregate_all(count,
+                  ( valid_assignment(Solution),
+                    forall(member(N, ClueNumbers), clue(N, Solution)) ),
+                  Count).
