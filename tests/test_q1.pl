@@ -3,10 +3,10 @@
 
 % expected_solution(Solution): Solution is the unique answer to the puzzle
 % under clues 1 to 9.
-expected_solution([p('Alex', design, java, 'AI'),
+expected_solution([p('Alex', design, java, embedded),
                    p('Ben', development, javascript, web),
-                   p('Carla', research, 'c++', data),
-                   p('Dana', testing, python, embedded)]).
+                   p('Carla', testing, python, 'AI'),
+                   p('Dana', research, 'c++', data)]).
 
 % invalid_assignment(Solution): Solution is a valid bijective assignment that
 % violates each of the clues 1 to 9.
