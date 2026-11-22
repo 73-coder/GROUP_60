@@ -15,3 +15,9 @@
       (cons (car tree)
             (preorder-list (cadr tree)
                            (preorder-list (caddr tree) acc)))))
+(define (postorder-list tree acc)
+  (if (null? tree)
+      acc
+      (postorder-list (cadr tree)
+                      (postorder-list (caddr tree)
+                                      (cons (car tree) acc)))))
