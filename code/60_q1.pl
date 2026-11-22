@@ -53,6 +53,15 @@ clue(8, Solution) :-
     memberchk(p(_, Dept, Lang, data), Solution),
     Dept == research,
     Lang \== javascript.
+% Clue 9: Alex prefers the 'AI' project. Clues 1-8 leave three solutions:
+% in two of them Carla has 'AI' and Alex has embedded (they differ only in
+% whether Alex or Carla is in design/testing); in the third, Alex has 'AI'
+% (design, java), Carla has data (research, c++), Ben has web (development,
+% javascript) and Dana has embedded (testing, python). This clue holds only in
+% the third, so it uniquely resolves the ambiguity.
+clue(9, Solution) :-
+    memberchk(p('Alex', _, _, Proj), Solution),
+    Proj == 'AI'.
 
 % main: prints one solution satisfying valid_assignment/1 and clues 1 to 8,
 % as two lines per friend (name, then [department, language, project]).
