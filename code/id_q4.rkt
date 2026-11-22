@@ -27,3 +27,10 @@
 
   (define (insert-if-short x lst n)
   ((make-inserter x (lambda (len) (< len n))) lst))
+
+  (define (print-insert-result)
+  (let* ((x (read))
+         (lst (read))
+         (n (read)))
+    (display (insert-if-short x lst n))
+    (newline)))
