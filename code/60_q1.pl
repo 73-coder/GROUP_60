@@ -1,5 +1,6 @@
 :- use_module(library(lists)).
 :- use_module(library(apply)).
+:- use_module(library(aggregate)).
 
 % valid_assignment(Solution): Solution lists Alex, Ben, Carla and Dana in this
 % order, each with a distinct department, a distinct favorite language and a
@@ -64,3 +65,11 @@ main :-
 % [Dept, Lang, Proj] as unquoted text on the next line.
 print_friend(p(Name, Dept, Lang, Proj)) :-
     format("~w~n[~w, ~w, ~w]~n", [Name, Dept, Lang, Proj]).
+
+% count_solutions(ClueNumbers, Count): Count is the number of distinct
+% solutions that are valid assignments and satisfy every clue in ClueNumbers.
+count_solutions(ClueNumbers, Count) :-
+    aggregate_all(count,
+                  ( valid_assignment(Solution),
+                    forall(member(N, ClueNumbers), clue(N, Solution)) ),
+                  Count).
