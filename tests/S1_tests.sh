@@ -27,9 +27,9 @@ nl=$'\n'
 # Copies the solution, appends CALL, runs it, and compares the exact output
 # (including the final newline) with EXPECTED followed by one newline.
 check() {
-    name="$1"
-    call="$2"
-    expected="$3"
+    local name="$1"
+    local call="$2"
+    local expected="$3"
 
     cp "$SRC" "$TMP/test.rkt"
     printf '\n%s\n' "$call" >> "$TMP/test.rkt"
@@ -55,12 +55,12 @@ check() {
 # check_tree NAME TREE INORDER PREORDER POSTORDER HEIGHT-AND-LEAVES
 # TREE is a quoted Racket tree, for example "'(1 () ())".
 check_tree() {
-    name="$1"
-    tree="$2"
-    in_out="$3"
-    pre_out="$4"
-    post_out="$5"
-    hl_out="$6"
+    local name="$1"
+    local tree="$2"
+    local in_out="$3"
+    local pre_out="$4"
+    local post_out="$5"
+    local hl_out="$6"
 
     check "$name: print-inorder" "(print-inorder $tree)" "$in_out"
     check "$name: print-all-traversals" "(print-all-traversals $tree)" \

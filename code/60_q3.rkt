@@ -1,3 +1,5 @@
+#lang racket/base
+
 (define (inorder-list tree acc)
   (if (null? tree)
       acc
