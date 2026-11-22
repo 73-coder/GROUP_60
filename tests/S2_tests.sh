@@ -5,7 +5,7 @@
 
 set -u
 
-SRC="${1:-code/id_q4.rkt}"
+SRC="${1:-code/60_q4.rkt}"
 
 if [ ! -f "$SRC" ]; then
     echo "ERROR: Solution file not found: $SRC"
