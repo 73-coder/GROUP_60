@@ -33,3 +33,9 @@
       0
       (+ 1 (max (tree-height (cadr tree))
                 (tree-height (caddr tree))))))
+ 
+(define (leaf-count tree)
+  (cond ((null? tree) 0)
+        ((and (null? (cadr tree)) (null? (caddr tree))) 1)
+        (else (+ (leaf-count (cadr tree))
+                 (leaf-count (caddr tree))))))               
