@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 # S2 tests for PPL Assignment 2.
 # Usage: bash tests/S2_tests.sh [path-to-q4-file]
@@ -11,8 +12,8 @@ if [ ! -f "$SRC" ]; then
     exit 1
 fi
 
-if [ ! -f "/c/Program Files/Racket/Racket.exe" ]; then
-    echo "ERROR: Racket executable not found."
+if ! command -v racket >/dev/null 2>&1; then
+    echo "ERROR: Racket is not installed or not on PATH."
     exit 1
 fi
 
@@ -30,7 +31,7 @@ check() {
     input="$2"
     expected="$3"
 
-    if got="$(printf '%s' "$input" | "/c/Program Files/Racket/Racket.exe" "$TMP/test.rkt" 2>"$TMP/error")"; then
+    if got="$(printf '%s' "$input" | racket "$TMP/test.rkt" 2>"$TMP/error")"; then
         if [ "$got" = "$expected" ]; then
             pass=$((pass + 1))
             echo "PASS  $name"
@@ -129,7 +130,7 @@ else
 fi
 
 # Static check: no output when loading the solution
-if out="$("/c/Program Files/Racket/Racket.exe" "$SRC" </dev/null 2>"$TMP/load_error")" && [ -z "$out" ]; then
+if out="$(racket "$SRC" </dev/null 2>"$TMP/load_error")" && [ -z "$out" ]; then
     pass=$((pass + 1))
     echo "PASS  silent on load"
 else
